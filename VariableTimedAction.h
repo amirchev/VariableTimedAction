@@ -18,64 +18,95 @@
 class VariableTimedAction {
 public:
 
-    /**
-       Starts the timer.
-       @param l the interval in milliseconds
-       @return true if the timer started, false if interval is invalid or the max number of actions are being executed
-     */
-    bool start(unsigned long l);
-
-    /**
-       This function is to be called repeatedly, however, not every call will
-       result in an update. This function checks if the interval has passed before
-       executing the user code.
-     */
-    void update();
-
-    /**
-       Pauses the timer.
-     */
-    void pause() {
-        cycling = false;
-    };
-
-    /**
-       Resumes the timer. Timer must have been initially started with a set
-       interval using the start(long) function and then paused using the pause
-       function. If this function returns false you must start it again using the
-       start(long) function.
-       @return true if the timer could be resumed, false if no interval is set
-     */
-    bool resume() {
-        if (interval != 0) {
-            cycling = true;
+    bool start(unsigned long startInterval, bool startNow = true) {
+        int emptyIndex;
+        for (emptyIndex = 0; emptyIndex < maxActions; emptyIndex++) {
+            if (actions[emptyIndex] == NULL) {
+                break;
+            }
         }
-        return cycling;
-    };
-    
-    /**
-     * Stops the user code from executing and removes the action from the actions
-     * list, freeing up a spot for another action to be added.
-     */
-    void stop();
+        if (emptyIndex < maxActions) {
+            actions[emptyIndex] = this;
+            index = emptyIndex;
+            interval = startInterval;
+            if (startNow) {
+                nextTick = millis();
+            } else {
+                nextTick = millis() + interval;
+            }
+            running = true;
+        } else { //unable to find spot
+            int previousMax = maxActions;
+            maxActions += 5;
+            VariableTimedAction ** newArray = new VariableTimedAction*[maxActions];
+            for (int i = 0; i < previousMax; i++) {
+                newArray[i] = actions[i];
+            }
+            delete [] actions;
+            actions = newArray;
+            
+            actions[emptyIndex] = this;
+            index = emptyIndex;
+            interval = startInterval;
+            if (startNow) {
+                nextTick = millis();
+            } else {
+                nextTick = millis() + interval;
+            }
+            running = true;
+        }
+        return running;
+    }
 
-    /**
-       Returns the status of the timer.
-       @return true if timer is running, false if it has not been initialized or is paused
-     */
+    void toggleRunning() {
+        if (index != -1) {
+            running = !running;
+        }
+    }
+
     bool isRunning() {
-        return cycling;
-    };
+        return running;
+    }
 
-    static const uint8_t MAX_ACTIONS = 5;
-    static VariableTimedAction* actions[MAX_ACTIONS];
+    void stop() {
+        actions[index] = NULL;
+        index = -1;
+        running = false;
+    }
 
-    static void updateActions();
+    void update() {
+        if (millis() > nextTick && running) {
+            unsigned long nextInterval = run();
+            if (nextInterval != 0) {
+                interval = nextInterval;
+            }
+            nextTick += interval;
+        }
+    }
+
+    static void updateActions() {
+        for (int i = 0; i < maxActions; i++) {
+            if (actions[i] != NULL) {
+                actions[i]->update();
+            }
+        }
+    }
+
+    static void init(int actionAmount = 16) {
+        maxActions = actionAmount;
+        actions = new VariableTimedAction*[maxActions]; //start at 16 actions, increase as needed
+        for (int i = 0; i < maxActions; i++) {
+            actions[i] = NULL;
+        }
+    }
 private:
-    bool cycling = false; //status variable
-    unsigned long interval = 0; //interval in millis that the action should be executed
-    unsigned long nextTick = 0; //time in millis that the action was executed last
-    uint8_t myIndex = MAX_ACTIONS; //the index of this action within the actions array
+    unsigned long interval;
+    unsigned long nextTick;
+    bool running = false;
+    int index = -1;
+
+    static int maxActions;
+    static VariableTimedAction ** actions;
     /**
        This function is to be overridden. It contains the code that will be
        executed every interval. The returned unsigned long is the new interval.
@@ -84,6 +115,9 @@ private:
      */
     virtual unsigned long run() = 0;
 };
+
+int VariableTimedAction::maxActions;
+VariableTimedAction ** VariableTimedAction::actions;
 
 #endif /* VARIABLETIMEDACTION_H */
 
