@@ -18,49 +18,51 @@
 class VariableTimedAction {
 public:
 
-    bool start(unsigned long startInterval, bool startNow = true) {
-        int emptyIndex;
-        for (emptyIndex = 0; emptyIndex < maxActions; emptyIndex++) {
-            if (actions[emptyIndex] == NULL) {
+    void start(unsigned long startInterval, bool startNow = true) {
+        static bool init = false;
+        if (!init) {
+            maxActions = 15;
+            actions = new VariableTimedAction*[maxActions](NULL); //start at 15 actions, increase as needed
+            init = true;
+        }
+
+        int emptyIndex = -1;
+        for (int i = 0; i < maxActions; i++) {
+            if (actions[i] == NULL) {
+                emptyIndex = i;
                 break;
             }
         }
-        if (emptyIndex < maxActions) {
-            actions[emptyIndex] = this;
-            index = emptyIndex;
-            interval = startInterval;
-            if (startNow) {
-                nextTick = millis();
-            } else {
-                nextTick = millis() + interval;
-            }
-            running = true;
-        } else { //unable to find spot
+        
+        if (emptyIndex == -1) { //unable to find spot
+            emptyIndex = maxActions;
             int previousMax = maxActions;
             maxActions += 5;
-            VariableTimedAction ** newArray = new VariableTimedAction*[maxActions];
+            VariableTimedAction ** newArray = new VariableTimedAction*[maxActions](NULL);
             for (int i = 0; i < previousMax; i++) {
                 newArray[i] = actions[i];
             }
             delete [] actions;
             actions = newArray;
-            
-            actions[emptyIndex] = this;
-            index = emptyIndex;
-            interval = startInterval;
-            if (startNow) {
-                nextTick = millis();
-            } else {
-                nextTick = millis() + interval;
-            }
-            running = true;
         }
-        return running;
+        
+        actions[emptyIndex] = this;
+        index = emptyIndex;
+        interval = startInterval;
+        if (startNow) {
+            nextTick = millis();
+        } else {
+            nextTick = millis() + interval;
+        }
+        running = true;
     }
 
     void toggleRunning() {
         if (index != -1) {
             running = !running;
+            if (running) {
+                nextTick = millis();
+            }
         }
     }
 
@@ -69,9 +71,11 @@ public:
     }
 
     void stop() {
-        actions[index] = NULL;
-        index = -1;
-        running = false;
+        if (index != -1) {
+            actions[index] = NULL;
+            index = -1;
+            running = false;
+        }
     }
 
     void update() {
@@ -89,14 +93,6 @@ public:
             if (actions[i] != NULL) {
                 actions[i]->update();
             }
-        }
-    }
-
-    static void init(int actionAmount = 16) {
-        maxActions = actionAmount;
-        actions = new VariableTimedAction*[maxActions]; //start at 16 actions, increase as needed
-        for (int i = 0; i < maxActions; i++) {
-            actions[i] = NULL;
         }
     }
 private:
