@@ -18,83 +18,20 @@
 class VariableTimedAction {
 public:
 
-    void start(unsigned long startInterval, bool startNow = true) {
-        static bool init = false;
-        if (!init) {
-            maxActions = 15;
-            actions = new VariableTimedAction*[maxActions](NULL); //start at 15 actions, increase as needed
-            init = true;
-        }
+    void start(unsigned long startInterval, bool startNow = true);
 
-        int emptyIndex = -1;
-        for (int i = 0; i < maxActions; i++) {
-            if (actions[i] == NULL) {
-                emptyIndex = i;
-                break;
-            }
-        }
-        
-        if (emptyIndex == -1) { //unable to find spot
-            emptyIndex = maxActions;
-            int previousMax = maxActions;
-            maxActions += 5;
-            VariableTimedAction ** newArray = new VariableTimedAction*[maxActions](NULL);
-            for (int i = 0; i < previousMax; i++) {
-                newArray[i] = actions[i];
-            }
-            delete [] actions;
-            actions = newArray;
-        }
-        
-        actions[emptyIndex] = this;
-        index = emptyIndex;
-        interval = startInterval;
-        if (startNow) {
-            nextTick = millis();
-        } else {
-            nextTick = millis() + interval;
-        }
-        running = true;
-    }
-
-    void toggleRunning() {
-        if (index != -1) {
-            running = !running;
-            if (running) {
-                nextTick = millis();
-            }
-        }
-    }
+    void toggleRunning();
 
     bool isRunning() {
         return running;
     }
 
-    void stop() {
-        if (index != -1) {
-            actions[index] = NULL;
-            index = -1;
-            running = false;
-        }
-    }
+    void stop();
 
-    void update() {
-        if (millis() > nextTick && running) {
-            unsigned long nextInterval = run();
-            if (nextInterval != 0) {
-                interval = nextInterval;
-            }
-            nextTick += interval;
-        }
-    }
+    void update();
 
-    static void updateActions() {
-        for (int i = 0; i < maxActions; i++) {
-            if (actions[i] != NULL) {
-                actions[i]->update();
-            }
-        }
-    }
+    static void updateActions();
+    
 private:
     unsigned long interval;
     unsigned long nextTick;
@@ -111,9 +48,6 @@ private:
      */
     virtual unsigned long run() = 0;
 };
-
-int VariableTimedAction::maxActions;
-VariableTimedAction ** VariableTimedAction::actions;
 
 #endif /* VARIABLETIMEDACTION_H */
 
