@@ -28,8 +28,6 @@ public:
 
     void stop();
 
-    void update();
-
     static void updateActions();
     
 private:
@@ -47,6 +45,8 @@ private:
        @return the new interval, 0 if the interval is to stay the same
      */
     virtual unsigned long run() = 0;
+
+    void update();
 };
 
 #endif /* VARIABLETIMEDACTION_H */
