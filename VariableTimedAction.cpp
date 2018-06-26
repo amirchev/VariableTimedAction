@@ -7,7 +7,7 @@
 #include <VariableTimedAction.h>
 
 int VariableTimedAction::maxActions;
-VariableTimedAction ** VariableTimedAction::actions;
+VariableTimedAction* VariableTimedAction::actions[];
 
 void VariableTimedAction::start(unsigned long startInterval, bool startNow = true) {
     static bool init = false;
