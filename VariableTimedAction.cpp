@@ -6,17 +6,10 @@
 
 #include <VariableTimedAction.h>
 
-int VariableTimedAction::maxActions;
-VariableTimedAction* VariableTimedAction::actions[];
+int VariableTimedAction::maxActions = 15;
+VariableTimedAction* VariableTimedAction::actions[VariableTimedAction::maxActions](NULL);
 
 void VariableTimedAction::start(unsigned long startInterval, bool startNow = true) {
-    static bool init = false;
-    if (!init) {
-        maxActions = 15;
-        actions = new VariableTimedAction*[maxActions](NULL); //start at 15 actions, increase as needed
-        init = true;
-    }
-
     if (index == -1) {
         int emptyIndex = -1;
         for (int i = 0; i < maxActions; i++) {
