@@ -65,6 +65,8 @@ class LEDManager : public VariableTimedAction {
 LEDManager manager;
 
 void setup() {
+  //start Serial at 9600
+  Serial.begin(9600);
   char input[8];
   
   //prompt user's input
