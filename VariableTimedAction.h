@@ -33,7 +33,7 @@ private:
     int index = -1;
 
     static int maxActions;
-    static VariableTimedAction* actions[];
+    static VariableTimedAction ** actions;
     /**
        This function is to be overridden. It contains the code that will be
        executed every interval. The returned unsigned long is the new interval.
