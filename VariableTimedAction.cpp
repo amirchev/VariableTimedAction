@@ -1,3 +1,9 @@
+/*
+ * VariableTimedAction.cpp - A library for creating timed events/actions.
+ * Created by Aleksandr N. Mirchev, Aug 27, 2017.
+ * Released into the public domain.
+ */
+
 #include <VariableTimedAction.h>
 
 int VariableTimedAction::maxActions;
