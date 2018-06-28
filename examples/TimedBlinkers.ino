@@ -7,14 +7,7 @@ class BlinkingLED : public VariableTimedAction {
 private:
   //stores the pin of this LED
   int pin;
-public:
-  BlinkingLED(int pin)
-  //sets the pin to be used for the LED
-  : pin(pin) {
-    //sets the pin mode
-    pinMode(pin, OUTPUT);
-  }
-  
+ 
   unsigned long run() {
     static bool on = false;
     
@@ -32,6 +25,13 @@ public:
     //returns the amount in seconds to wait before executing the next event
     //if 0 is returned, then the previous interval is maintained
     return 0;
+  }
+public:
+  BlinkingLED(int pin)
+  //sets the pin to be used for the LED
+  : pin(pin) {
+    //sets the pin mode
+    pinMode(pin, OUTPUT);
   }
 };
 
