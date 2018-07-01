@@ -4,7 +4,7 @@ This library, in technical terms, is an interface that allows you to define a `r
 In simpler terms, this library allows you to "multi-thread" or have multiple separately executing timed actions.
 
 ## How to Use
-First and foremost, your 'loop' method must call `VariableTimedAction::updateActions` constantly. For more timing-intensive applications it is recommended that the call to `updateActions` is the only thing in the loop method. It will look like this:
+First and foremost, your `loop` method must call `VariableTimedAction::updateActions` constantly. For more timing-intensive applications it is recommended that the call to `updateActions` is the only thing in the loop method. It will look like this:
 
 ```
 void loop() {
@@ -26,7 +26,8 @@ private:
     //increase the timer
     count++;
 
-    //return code of 0 indicates no change to the interval; if the interval must be changed, then return the new interval
+    //return code of 0 indicates no change to the interval
+    //if the interval must be changed, then return the new interval
     return 0;
   }
 
