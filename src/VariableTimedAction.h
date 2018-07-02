@@ -21,7 +21,7 @@ public:
        Starts the timer and sets the interval that the #run method should be called.
        This method can be called whether the timer is stopped or paused. If it is
        stopped or has never been started, it will be started. If it is paused, then it will
-       resume 
+       resume using the new interval.
        
        @param startInterval The interval to wait between calls to #run.
        @param startNow If true, the timer will execute #run right away and then wait 
