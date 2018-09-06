@@ -9,11 +9,14 @@
 int VariableTimedAction::maxActions;
 VariableTimedAction ** VariableTimedAction::actions;
 
-void VariableTimedAction::start(unsigned long startInterval, bool startNow = true) {
+void VariableTimedAction::start(unsigned long startInterval, bool startNow) {
     static bool init = false;
     if (!init) {
         maxActions = 15;
-        actions = new VariableTimedAction*[maxActions](NULL); //start at 15 actions, increase as needed
+        actions = new VariableTimedAction*[maxActions]; //start at 15 actions, increase as needed
+        for (int i = 0; i < maxActions; i++) {
+            actions[i] = NULL;
+        }
         init = true;
     }
     
@@ -30,7 +33,10 @@ void VariableTimedAction::start(unsigned long startInterval, bool startNow = tru
             emptyIndex = maxActions;
             int previousMax = maxActions;
             maxActions += 5;
-            VariableTimedAction ** newArray = new VariableTimedAction*[maxActions](NULL);
+            VariableTimedAction ** newArray = new VariableTimedAction*[maxActions];
+            for (int i = previousMax; i < maxActions; i++) {
+                newArray[i] = NULL;
+            }
             for (int i = 0; i < previousMax; i++) {
                 newArray[i] = actions[i];
             }
@@ -82,7 +88,7 @@ void VariableTimedAction::update() {
     }
 }
 
-static void VariableTimedAction::updateActions() {
+void VariableTimedAction::updateActions() {
     for (int i = 0; i < maxActions; i++) {
         if (actions[i] != NULL) {
             actions[i]->update();
