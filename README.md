@@ -5,12 +5,12 @@
 3. [Documentation](#documentation)
 
 ## Introduction
-This library, in technical terms, is an interface that allows you to define a `run` method, similar to Java's [Runnable](https://docs.oracle.com/javase/7/docs/api/java/lang/Runnable.html) interface, which will be executed at the specified interval.
+This library, in technical terms, is an interface that allows you to define a [run](#virtual-unsigned-long-run) method, similar to Java's [Runnable](https://docs.oracle.com/javase/7/docs/api/java/lang/Runnable.html) interface, which will be executed at the specified interval.
 
 In simpler terms, this library allows you to "multi-thread" or have multiple separately executing timed actions.
 
 ## Examples
-First and foremost, your `loop` method must call [VariableTimedAction::updateActions](#static-void-updateActions) constantly. For more timing-intensive applications it is recommended that the call to [updateActions](#static-void-updateActions) is the only thing in the loop method. It will look like this:
+First and foremost, your `loop` method must call [VariableTimedAction::updateActions](#static-void-updateactions) constantly. For more timing-intensive applications it is recommended that the call to [updateActions](#static-void-updateactions) is the only thing in the loop method. It will look like this:
 
 ```
 void loop() {
@@ -55,15 +55,15 @@ void setup() {
 }
 ```
 
-To pause/unpause, you can use the [toggleRunning](#void-toggleRunning) method. To stop the timer, you can use the [stop](#void-stop) method. If you use the [stop](#void-stop) method, you must use the [start](#void-startunsigned-long-startInterval,-bool-startNow--true) method to begin the counter again. To find out if the timer is running or it is currently paused, use the [isRunning](#bool-isRunning) method. You can have as many timers as you like; each of them can be controlled individually.
+To pause/unpause, you can use the [toggleRunning](#void-togglerunning) method. To stop the timer, you can use the [stop](#void-stop) method. If you use the [stop](#void-stop) method, you must use the [start](#void-startunsigned-long-startinterval,-bool-startnow--true) method to begin the counter again. To find out if the timer is running or it is currently paused, use the [isRunning](#bool-isrunning) method. You can have as many timers as you like; each of them can be controlled individually.
 
 ## Documentation
 
-1. [void start(unsigned long, bool)](#void-startunsigned-long-startInterval,-bool-startNow--true)
-2. [void toggleRunning()](#void-toggleRunning)
-3. [bool isRunning()](#bool-isRunning)
+1. [void start(unsigned long, bool)](#void-startunsigned-long-startinterval,-bool-startnow--true)
+2. [void toggleRunning()](#void-togglerunning)
+3. [bool isRunning()](#bool-isrunning)
 4. [void stop()](#void-stop)
-5. [static void updateActions()](#static-void-updateActions)
+5. [static void updateActions()](#static-void-updateactions)
 6. [virtual unsigned long run()](#virtual-unsigned-long-run)
 
 ### void start(unsigned long startInterval, bool startNow = true)
