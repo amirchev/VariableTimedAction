@@ -1,10 +1,16 @@
 # VariableTimedAction
+
+1. [Introduction](#introduction)
+2. [Examples](#examples)
+3. [Documentation](#documentation)
+
+## Introduction
 This library, in technical terms, is an interface that allows you to define a `run` method, similar to Java's [Runnable](https://docs.oracle.com/javase/7/docs/api/java/lang/Runnable.html) interface, which will be executed at the specified interval.
 
 In simpler terms, this library allows you to "multi-thread" or have multiple separately executing timed actions.
 
-## How to Use
-First and foremost, your `loop` method must call `VariableTimedAction::updateActions` constantly. For more timing-intensive applications it is recommended that the call to `updateActions` is the only thing in the loop method. It will look like this:
+## Examples
+First and foremost, your `loop` method must call [VariableTimedAction::updateActions](#static-void-updateActions) constantly. For more timing-intensive applications it is recommended that the call to [updateActions](#static-void-updateActions) is the only thing in the loop method. It will look like this:
 
 ```
 void loop() {
@@ -49,4 +55,45 @@ void setup() {
 }
 ```
 
-To pause/unpause, you can use the `toggleRunning` method. To stop the timer, you can use the `stop` method. If you use the `stop` method, you must use the `start` method to begin the counter again. To find out if the timer is running or it is currently paused, use the `isRunning` method. You can have as many timers as you like; each of them can be controlled individually.
+To pause/unpause, you can use the [toggleRunning](#void-toggleRunning) method. To stop the timer, you can use the [stop](#void-stop) method. If you use the [stop](#void-stop) method, you must use the [start](#void-startunsigned-long-startInterval,-bool-startNow--true) method to begin the counter again. To find out if the timer is running or it is currently paused, use the [isRunning](#bool-isRunning) method. You can have as many timers as you like; each of them can be controlled individually.
+
+## Documentation
+
+1. [void start(unsigned long, bool)](#void-startunsigned-long-startInterval,-bool-startNow--true)
+2. [void toggleRunning()](#void-toggleRunning)
+3. [bool isRunning()](#bool-isRunning)
+4. [void stop()](#void-stop)
+5. [static void updateActions()](#static-void-updateActions)
+6. [virtual unsigned long run()](#virtual-unsigned-long-run)
+
+### void start(unsigned long startInterval, bool startNow = true)
+Starts the timer and sets the interval that the [run](#virtual-unsigned-long-run) method should be called. 
+This method can be called whether the timer is stopped or paused. If it is stopped or has never been started, it will be started. If it is paused, then it will resume using the new interval.
+#### @param startInterval
+The interval to wait between calls to [run](#virtual-unsigned-long-run). 
+#### @param startNow
+If true, the timer will execute [run](#virtual-unsigned-long-run) right away and then wait until the next interval. Otherwise, the timer will execute after the interval has passed. 
+
+### void toggleRunning()
+Returns current status of the timer.
+#### @return
+True if the timer is running, false if it is paused or stopped.
+
+### bool isRunning()
+Returns current status of the timer. 
+#### @return
+True if the timer is running, false if it is paused or stopped. 
+
+### void stop()
+Stops the timer, removing it from the list of actions. 
+If the timer has to be started again, then use start as it will need to be added into the list of actions. 
+
+### static void updateActions()
+Iterates through all actions and calls the [run](#virtual-unsigned-long-run) method on actions whose interval has passed. 
+This method should be called frequently in the `loop` method. In timing-intensive applications, this method should be the only thing in the `loop` method. 
+
+### virtual unsigned long run()
+Each implementing class must override this function with custom behavior.
+This method is called after the defined interval has passed. For proper functioning, this method must return the new interval in milliseconds or `0` if the interval is to remain unchanged.
+#### @return
+The new interval or `0` if the interval is to stay the same.
