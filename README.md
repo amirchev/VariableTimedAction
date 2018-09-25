@@ -55,11 +55,11 @@ void setup() {
 }
 ```
 
-To pause/unpause, you can use the [toggleRunning](#void-togglerunning) method. To stop the timer, you can use the [stop](#void-stop) method. If you use the [stop](#void-stop) method, you must use the [start](#void-startunsigned-long-startinterval,-bool-startnow--true) method to begin the counter again. To find out if the timer is running or it is currently paused, use the [isRunning](#bool-isrunning) method. You can have as many timers as you like; each of them can be controlled individually.
+To pause/unpause, you can use the [toggleRunning](#void-togglerunning) method. To stop the timer, you can use the [stop](#void-stop) method. If you use the [stop](#void-stop) method, you must use the [start](#void-startunsigned-long-startinterval-bool-startnow--true) method to begin the counter again. To find out if the timer is running or it is currently paused, use the [isRunning](#bool-isrunning) method. You can have as many timers as you like; each of them can be controlled individually.
 
 ## Documentation
 
-1. [void start(unsigned long, bool)](#void-startunsigned-long-startinterval,-bool-startnow--true)
+1. [void start(unsigned long, bool)](#void-startunsigned-long-startinterval-bool-startnow--true)
 2. [void toggleRunning()](#void-togglerunning)
 3. [bool isRunning()](#bool-isrunning)
 4. [void stop()](#void-stop)
@@ -75,9 +75,7 @@ The interval to wait between calls to [run](#virtual-unsigned-long-run).
 If true, the timer will execute [run](#virtual-unsigned-long-run) right away and then wait until the next interval. Otherwise, the timer will execute after the interval has passed. 
 
 ### void toggleRunning()
-Returns current status of the timer.
-#### @return
-True if the timer is running, false if it is paused or stopped.
+Toggles the timer on and off. This is faster than stopping and starting the timer every time. 
 
 ### bool isRunning()
 Returns current status of the timer. 
